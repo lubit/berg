@@ -3,17 +3,17 @@ syntax = "proto3";
 // The greeting service definition.
 service Greeter {
     // Sends a greeting
-    rpc SayHello (HelloRequest) returns (HelloReply) {}
+    rpc StartJob (JobRequest) returns (JobReply) {}
     // Sends another greeting
-    rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+    rpc StopJob (JobRequest) returns (JobReply) {}
   }
   
   // The request message containing the user's name.
-  message HelloRequest {
+  message JobRequest {
     string name = 1;
   }
   
   // The response message containing the greetings
-  message HelloReply {
+  message JobReply {
     string message = 1;
   }

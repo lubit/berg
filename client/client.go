@@ -21,7 +21,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: "berg"})
+	r, err := c.StartJob(ctx, &pb.JobRequest{Name: "berg"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

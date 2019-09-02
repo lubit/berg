@@ -11,14 +11,14 @@ import (
 
 type RPCServer struct{}
 
-func (s *RPCServer) SayHello(ctx context.Context, in *HelloRequest) (*HelloReply, error) {
+func (s *RPCServer) StartJob(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received: %v", in.GetName())
-	return &HelloReply{Message: "Hello " + in.GetName()}, nil
+	return &JobReply{Message: "Hello " + in.GetName()}, nil
 }
 
-func (s *RPCServer) SayHelloAgain(ctx context.Context, in *HelloRequest) (*HelloReply, error) {
+func (s *RPCServer) StopJob(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received Agagin: %v", in.GetName)
-	return &HelloReply{Message: "Hello Agagin " + in.GetName()}, nil
+	return &JobReply{Message: "Hello Agagin " + in.GetName()}, nil
 }
 
 func NewRPCServer() {
