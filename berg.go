@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"runtime/trace"
 	"time"
 
-	pb "github.com/lubit/berg/rpc"
+	"github.com/lubit/berg/rpc"
+	"github.com/lubit/berg/web"
 )
 
 /*
@@ -18,16 +17,19 @@ import (
 	3. web接口/rpc接口
 	4. 资源隔离 slot?
 	5. 分布式任务管理
+		5.1 任务形式：plugin
+		5.2 任务交互：http2 file + conf
 */
 func main() {
 	// config
 
-	go pb.NewRPCServer()
+	go rpc.NewRPCServer()
+	go web.NewWebServer()
 	// MainService()
 	// web
-	go sysinfo()
-	trace.Start(os.Stderr)
-	defer trace.Stop()
+	//go sysinfo()
+	//trace.Start(os.Stderr)
+	//defer trace.Stop()
 
 	NewDeath(finalize).Wait()
 }
@@ -36,7 +38,7 @@ func main() {
 func finalize(dch *chan struct{}) {
 	defer close(*dch)
 	fmt.Println("berg finalize ")
-	time.Sleep(5 * time.Second)
+	time.Sleep(1 * time.Second)
 	return
 }
 
