@@ -21,19 +21,14 @@ type Channel struct{
 func NewChannel() *Channel{
 	var channel Channel
 
-
-
-
 	//加载Close Signal Channel位置为0
 	channel.ChannelQueue = append(channel.ChannelQueue, make([]chan interface{}, channel.DefaultChannelNumber))
-	channel.ChannelQueue[0] = make([]chan interface{},channel.DefaultChannelNumber)
 	for i := 0; i < channel.DefaultChannelNumber; i++ {
 		channel.ChannelQueue[0][i] = make(chan interface{},channel.DefaultChannelSize)
 	}
 
 	//加载Source Channel位置为1
 	channel.ChannelQueue = append(channel.ChannelQueue, make([]chan interface{}, channel.DefaultChannelNumber))
-	channel.ChannelQueue[1] = make([]chan interface{},channel.DefaultChannelNumber)
 	for i := 0; i < channel.DefaultChannelNumber; i++ {
 		channel.ChannelQueue[1][i] = make(chan interface{},channel.DefaultChannelSize)
 	}

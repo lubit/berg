@@ -79,6 +79,7 @@ func (data *DataSource) Run(inchan chan interface{}, outchan chan interface{}){
 
 	defer data.consumer.Close()
 
+	//利用context来接收退出信号
 	ctx,cancel := context.WithCancel(context.Background())
 
 	go func(){
@@ -101,7 +102,7 @@ func (data *DataSource) Run(inchan chan interface{}, outchan chan interface{}){
 
 
 //前面信息初始化后进行数据源加载启动
-func (data *DataSource) Execute(outchan *Channel) error{
+func (data *DataSource) Execute(chns *Channel) error{
 
 	//启动routine运行
 
@@ -109,8 +110,8 @@ func (data *DataSource) Execute(outchan *Channel) error{
 
 	//写入outChannel
 
-	for i := 0; i < len(outchan.ChannelQueue[1]); i++{
-		go data.Run(outchan.ChannelQueue[1][i])
+	for i := 0; i < len(chns.ChannelQueue[1]); i++{
+		go data.Run(chns.ChannelQueue[0][i],chns.ChannelQueue[1][i])
 	}
 
 
