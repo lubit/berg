@@ -104,6 +104,8 @@ func (data *DataSource) Run(inchan chan interface{}, outchan chan interface{}){
 //前面信息初始化后进行数据源加载启动
 func (data *DataSource) Execute(chns *Channel) error{
 
+	//
+
 	//启动routine运行
 
 	//启动kafka消费
