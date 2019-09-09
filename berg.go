@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 
-	"github.com/lubit/berg/rpc"
-	"github.com/lubit/berg/web"
+	"github.com/lubit/berg/command"
+	"github.com/mitchellh/cli"
 )
 
 /*
@@ -21,10 +23,13 @@ import (
 		5.2 任务交互：http2 file + conf
 */
 func main() {
-	// config
 
-	go rpc.NewRPCServer()
-	go web.NewWebServer()
+	NewClient()
+	// config
+	// rpc server
+
+	// gossip cluster
+
 	// MainService()
 	// web
 	//go sysinfo()
@@ -40,6 +45,23 @@ func finalize(dch *chan struct{}) {
 	fmt.Println("berg finalize ")
 	time.Sleep(1 * time.Second)
 	return
+}
+
+func NewClient() {
+
+	ui := &cli.BasicUi{Writer: os.Stdout}
+
+	c := cli.NewCLI("berg", "0.0.1")
+	c.Commands = map[string]cli.CommandFactory{
+		"start": func() (cli.Command, error) { return &command.CommandStart{Ui: ui}, nil },
+		"join":  func() (cli.Command, error) { return &command.CommandJoin{Ui: ui}, nil },
+	}
+	c.Args = os.Args[1:]
+	_, err := c.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("berg start")
 }
 
 func sysinfo() {
