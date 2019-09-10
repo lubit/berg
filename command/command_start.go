@@ -6,9 +6,9 @@ import (
 
 	"github.com/hashicorp/memberlist"
 	"github.com/hashicorp/serf/serf"
-	"github.com/mitchellh/cli"
 	"github.com/lubit/berg/rpc"
 	"github.com/lubit/berg/web"
+	"github.com/mitchellh/cli"
 )
 
 type CommandStart struct {
@@ -16,13 +16,14 @@ type CommandStart struct {
 }
 
 func (c *CommandStart) Run(args []string) int {
-	
+
 	// new gossip cluster
 	go NewSerf()
 	// new rpc server
 	go rpc.NewRPCServer()
 	// web server
 	go web.NewWebServer()
+
 	return 0
 }
 func (c *CommandStart) Help() string {
@@ -48,6 +49,8 @@ func NewSerf() {
 	if err != nil {
 		fmt.Println("failed to start lan serf: ", err)
 	}
+
+	//berf.Shutdown()
 
 	shutdownCH := berf.ShutdownCh()
 	for {

@@ -1,16 +1,57 @@
 package web
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path"
 	"strings"
+	"sync"
+	"time"
+)
+
+var (
+	webServer *http.Server
+	webOnce   sync.Once
 )
 
 func NewWebServer() {
+
 	http.HandleFunc("/addjob", uploadFile)
 	http.ListenAndServe(":8080", nil)
+}
+
+func StartHttpServer() error {
+	webOnce.Do(func() {
+		mux := http.NewServeMux()
+		mux.HandleFunc("/addjob", uploadFile)
+		webServer := &http.Server{
+			Addr:    ":8080",
+			Handler: mux,
+		}
+		go func() {
+			if err := webServer.ListenAndServe(); err != http.ErrServerClosed {
+				log.Fatalf("ListenAndServe(): %s", err)
+			}
+		}()
+	})
+
+	return nil
+}
+
+func StopHttpServer() error {
+	if webServer == nil {
+		log.Fatal("web server not start")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	err := webServer.Shutdown(ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return nil
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
