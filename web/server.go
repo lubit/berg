@@ -23,25 +23,30 @@ func NewWebServer() {
 	http.ListenAndServe(":8080", nil)
 }
 
-func StartHttpServer() error {
-	webOnce.Do(func() {
-		mux := http.NewServeMux()
-		mux.HandleFunc("/addjob", uploadFile)
-		webServer := &http.Server{
-			Addr:    ":8080",
-			Handler: mux,
+func StartHTTPServer() error {
+
+	fmt.Println("HTTP Server Start Begin")
+
+	//webOnce.Do(func() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/addjob", uploadFile)
+	webServer := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+	go func() {
+		if err := webServer.ListenAndServe(); err != http.ErrServerClosed {
+			log.Fatalf("ListenAndServe(): %s", err)
 		}
-		go func() {
-			if err := webServer.ListenAndServe(); err != http.ErrServerClosed {
-				log.Fatalf("ListenAndServe(): %s", err)
-			}
-		}()
-	})
+	}()
+	//})
+
+	fmt.Println("HTTP Server Started")
 
 	return nil
 }
 
-func StopHttpServer() error {
+func StopHTTPServer() error {
 	if webServer == nil {
 		log.Fatal("web server not start")
 	}

@@ -3,11 +3,7 @@ package command
 import (
 	"fmt"
 	"strings"
-
-	"github.com/hashicorp/memberlist"
-	"github.com/hashicorp/serf/serf"
-	"github.com/lubit/berg/rpc"
-	"github.com/lubit/berg/web"
+	"time"
 	"github.com/mitchellh/cli"
 )
 
@@ -17,15 +13,24 @@ type CommandStart struct {
 
 func (c *CommandStart) Run(args []string) int {
 
-	// new gossip cluster
-	go NewSerf()
-	// new rpc server
-	go rpc.NewRPCServer()
-	// web server
-	go web.NewWebServer()
+	/*
+
+	*/
+	agent := &agent{}
+	go agent.Start()
+	NewDeath(finalize).Wait()
 
 	return 0
 }
+
+//TODO 回收函数
+func finalize(dch *chan struct{}) {
+	defer close(*dch)
+	fmt.Println("berg finalize ")
+	time.Sleep(1 * time.Second)
+	return
+}
+
 func (c *CommandStart) Help() string {
 	helpText := "berg start --"
 	return strings.TrimSpace(helpText)
@@ -34,10 +39,10 @@ func (c *CommandStart) Synopsis() string {
 	return "Tell berg to start"
 }
 
+/*
 func NewSerf() {
 	//config
 	//start && listen && join pri LAN
-	//
 	serfConfig := serf.DefaultConfig()
 	serfConfig.MemberlistConfig = memberlist.DefaultLocalConfig()
 	serfConfig.MemberlistConfig.BindAddr = "0.0.0.0"
@@ -51,14 +56,13 @@ func NewSerf() {
 	}
 
 	//berf.Shutdown()
-
 	shutdownCH := berf.ShutdownCh()
 	for {
 		select {
 		case <-shutdownCH:
 			fmt.Println("shutdown")
 			return
-
 		}
 	}
 }
+*/

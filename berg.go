@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/lubit/berg/command"
 	"github.com/mitchellh/cli"
@@ -35,16 +34,6 @@ func main() {
 	//go sysinfo()
 	//trace.Start(os.Stderr)
 	//defer trace.Stop()
-
-	NewDeath(finalize).Wait()
-}
-
-//TODO 回收函数
-func finalize(dch *chan struct{}) {
-	defer close(*dch)
-	fmt.Println("berg finalize ")
-	time.Sleep(1 * time.Second)
-	return
 }
 
 func NewClient() {
@@ -54,6 +43,7 @@ func NewClient() {
 	c := cli.NewCLI("berg", "0.0.1")
 	c.Commands = map[string]cli.CommandFactory{
 		"start": func() (cli.Command, error) { return &command.CommandStart{Ui: ui}, nil },
+		"stop":  func() (cli.Command, error) { return &command.CommandStop{Ui: ui}, nil },
 		"join":  func() (cli.Command, error) { return &command.CommandJoin{Ui: ui}, nil },
 	}
 	c.Args = os.Args[1:]

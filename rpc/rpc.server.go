@@ -11,11 +11,14 @@ import (
 )
 
 var (
-	rpcServer *grpc.Server
-	rpcOnce   sync.Once
+	RPCServ *RPCService
+	RPCOnce   sync.Once
 )
 
-type RPCService struct{}
+type RPCService struct {
+	StopCh chan struct{}
+	GrpcSv *grpc.Server
+}
 
 func (s *RPCService) StartJob(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received: %v", in.GetName())
@@ -24,29 +27,43 @@ func (s *RPCService) StartJob(ctx context.Context, in *JobRequest) (*JobReply, e
 
 func (s *RPCService) StopJob(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received Agagin: %v", in.GetName)
+	close(s.StopCh)
 	return &JobReply{Message: "Hello Agagin " + in.GetName()}, nil
 }
 
 func StartRPCServer() error {
-	rpcOnce.Do(func() {
-		lis, err := net.Listen("tcp", ":8888")
-		if err != nil {
-			fmt.Println("listen failed")
-		}
+	fmt.Println("RPC SERVER START")
+
+	RPCServ = &RPCService{
+		StopCh: make(chan struct{}),
+		GrpcSv: grpc.NewServer(),
+	}
+	//rpcOnce.Do(func() {
+	lis, err := net.Listen("tcp", ":8888")
+	if err != nil {
+		fmt.Println("listen failed")
+	}
+	RegisterGreeterServer(RPCServ.GrpcSv, RPCServ)
+	if err := RPCServ.GrpcSv.Serve(lis); err != nil {
+		fmt.Printf("rpc failed: %v", err)
+	}
+	/*
 		rpcServer := grpc.NewServer()
-		RegisterGreeterServer(rpcServer, &RPCService{})
+		RegisterGreeterServer(rpcServer, &RPCService{stopCh: make(chan struct{})})
 		if err := rpcServer.Serve(lis); err != nil {
 			fmt.Printf("rpc failed: %v", err)
 		}
-	})
+	*/
+	//})
+
 	return nil
 }
 
 func StopRPCServer() error {
-	if rpcServer == nil {
+	if RPCServ == nil {
 		log.Fatal("rpc not start")
 	}
-	rpcServer.Stop()
+	RPCServ.GrpcSv.Stop()
 	return nil
 }
 
