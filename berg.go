@@ -42,9 +42,10 @@ func NewClient() {
 
 	c := cli.NewCLI("berg", "0.0.1")
 	c.Commands = map[string]cli.CommandFactory{
-		"start": func() (cli.Command, error) { return &command.CommandStart{Ui: ui}, nil },
-		"stop":  func() (cli.Command, error) { return &command.CommandStop{Ui: ui}, nil },
-		"join":  func() (cli.Command, error) { return &command.CommandJoin{Ui: ui}, nil },
+		"start":   func() (cli.Command, error) { return &command.CommandStart{Ui: ui}, nil },
+		"stop":    func() (cli.Command, error) { return &command.CommandStop{Ui: ui}, nil },
+		"join":    func() (cli.Command, error) { return &command.CommandJoin{Ui: ui}, nil },
+		"members": func() (cli.Command, error) { return &command.CommandMembers{Ui: ui}, nil },
 	}
 	c.Args = os.Args[1:]
 	_, err := c.Run()

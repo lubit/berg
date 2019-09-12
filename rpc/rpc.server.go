@@ -7,6 +7,7 @@ import (
 	"net"
 	"sync"
 
+	"github.com/lubit/berg/ddn"
 	"google.golang.org/grpc"
 )
 
@@ -31,11 +32,18 @@ func (s *RPCService) Stop(ctx context.Context, in *JobRequest) (*JobReply, error
 }
 func (s *RPCService) Join(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received Join: %v", in.GetName())
-	return &JobReply{Message: "Hello " + in.GetName()}, nil
+	log.Printf("Received Join Addr: %+v", in.GetAddrs())
+	if err := ddn.Join(in.GetAddrs()); err != nil {
+		return &JobReply{Message: "Join Failed: " + in.GetName()}, nil
+	} else {
+		return &JobReply{Message: "Join Success: " + in.GetName()}, nil
+	}
+
 }
 func (s *RPCService) Members(ctx context.Context, in *JobRequest) (*JobReply, error) {
 	log.Printf("Received Members: %v", in.GetName())
-	return &JobReply{Message: "Hello " + in.GetName()}, nil
+	m := ddn.Members()
+	return &JobReply{Message: m}, nil
 }
 
 func (s *RPCService) StartJob(ctx context.Context, in *JobRequest) (*JobReply, error) {

@@ -1,14 +1,14 @@
 package command
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"strings"
 	"time"
-	"context"
-	"os"
 
-	"github.com/mitchellh/cli"
 	"github.com/lubit/berg/rpc"
+	"github.com/mitchellh/cli"
 	"google.golang.org/grpc"
 )
 
@@ -26,18 +26,19 @@ func (c *CommandJoin) Run(args []string) int {
 	}
 	defer conn.Close()
 
+	fmt.Println("join:", args)
+
 	cc := rpc.NewGreeterClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := cc.StartJob(ctx, &rpc.JobRequest{Name: "berg"})
+	r, err := cc.Join(ctx, &rpc.JobRequest{Name: "bergJoin", Addrs: args})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting:%s", r.GetMessage())
 
-	os.Exit(0)
 	return 0
 }
 

@@ -20,7 +20,9 @@ service Greeter {
   // The request message containing the user's name.
   message JobRequest {
     string name = 1;
+    repeated string addrs = 2;
   }
+
   
   // The response message containing the greetings
   message JobReply {

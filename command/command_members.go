@@ -37,11 +37,11 @@ func (c *CommandMembers) Run(args []string) int {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := cli.StopJob(ctx, &rpc.JobRequest{Name: "berg"})
+	r, err := cli.Members(ctx, &rpc.JobRequest{Name: "members"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting:%s", r.GetMessage())
+	log.Printf("members:%s", r.GetMessage())
 
 	return 0
 }
