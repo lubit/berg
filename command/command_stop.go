@@ -1,29 +1,31 @@
 package command
 
 import (
-	"context"
-	"log"
 	"strings"
-	"time"
 
 	"github.com/lubit/berg/rpc"
 	"github.com/mitchellh/cli"
+
+	"context"
+	"log"
+	"time"
+
 	"google.golang.org/grpc"
 )
 
-type CommandMembers struct {
+type CommandStop struct {
 	Ui cli.Ui
 }
 
-func (c *CommandMembers) Help() string {
+func (c *CommandStop) Help() string {
 	helpText := "berg stop --"
 	return strings.TrimSpace(helpText)
 }
-func (c *CommandMembers) Synopsis() string {
+func (c *CommandStop) Synopsis() string {
 	return "Tell berg to stop"
 }
 
-func (c *CommandMembers) Run(args []string) int {
+func (c *CommandStop) Run(args []string) int {
 
 	// new rpc server
 	conn, err := grpc.Dial("localhost:8888", grpc.WithInsecure())

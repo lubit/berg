@@ -51,7 +51,7 @@ func NewClient() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("berg start")
+	fmt.Println("berg command finished")
 }
 
 func sysinfo() {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
 	"github.com/mitchellh/cli"
 )
 
@@ -15,10 +16,10 @@ func (c *CommandStart) Run(args []string) int {
 
 	/*
 
-	*/
+	 */
 	agent := &agent{}
-	go agent.Start()
-	NewDeath(finalize).Wait()
+	agent.Start()
+	//NewDeath(finalize).Wait()
 
 	return 0
 }

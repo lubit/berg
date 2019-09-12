@@ -30,7 +30,7 @@ func StartHTTPServer() error {
 	//webOnce.Do(func() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/addjob", uploadFile)
-	webServer := &http.Server{
+	webServer = &http.Server{
 		Addr:    ":8080",
 		Handler: mux,
 	}
@@ -56,6 +56,7 @@ func StopHTTPServer() error {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("http shutdown...")
 	return nil
 }
 

@@ -112,16 +112,18 @@ func init() {
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
-	// 139 bytes of a gzipped FileDescriptorProto
+	// 171 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2c, 0x2a, 0x48, 0xd6,
 	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x57, 0x52, 0xe0, 0xe2, 0xf2, 0xca, 0x4f, 0x0a, 0x4a, 0x2d, 0x2c,
 	0x4d, 0x2d, 0x2e, 0x11, 0x12, 0xe2, 0x62, 0xc9, 0x4b, 0xcc, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4,
 	0xe0, 0x0c, 0x02, 0xb3, 0x95, 0x54, 0xb8, 0x38, 0xc0, 0x2a, 0x0a, 0x72, 0x2a, 0x85, 0x24, 0xb8,
-	0xd8, 0x73, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x61, 0x4a, 0x60, 0x5c, 0xa3, 0x10, 0x2e, 0x76, 0xf7,
-	0xa2, 0xd4, 0xd4, 0x92, 0xd4, 0x22, 0x21, 0x15, 0x2e, 0x8e, 0xe0, 0x92, 0xc4, 0xa2, 0x12, 0xaf,
-	0xfc, 0x24, 0x21, 0x6e, 0x3d, 0x84, 0xe9, 0x52, 0x9c, 0x7a, 0x30, 0x83, 0x94, 0x18, 0x84, 0x94,
-	0xb9, 0xd8, 0x83, 0x4b, 0xf2, 0x0b, 0xf0, 0x2a, 0x4a, 0x62, 0x03, 0x3b, 0xd2, 0x18, 0x10, 0x00,
-	0x00, 0xff, 0xff, 0xc1, 0x9d, 0x9f, 0xed, 0xb1, 0x00, 0x00, 0x00,
+	0xd8, 0x73, 0x53, 0x8b, 0x8b, 0x13, 0xd3, 0x61, 0x4a, 0x60, 0x5c, 0xa3, 0x07, 0x8c, 0x5c, 0xec,
+	0xee, 0x45, 0xa9, 0xa9, 0x25, 0xa9, 0x45, 0x42, 0x2a, 0x5c, 0x1c, 0xc1, 0x25, 0x89, 0x45, 0x25,
+	0x5e, 0xf9, 0x49, 0x42, 0xdc, 0x7a, 0x08, 0xe3, 0xa5, 0x38, 0xf5, 0x60, 0x26, 0x29, 0x31, 0x08,
+	0x29, 0x73, 0xb1, 0x07, 0x97, 0xe4, 0x17, 0x10, 0x54, 0xe4, 0x9b, 0x9a, 0x9b, 0x94, 0x5a, 0x54,
+	0x8c, 0x47, 0x91, 0x02, 0x17, 0x8b, 0x57, 0x7e, 0x66, 0x1e, 0x1e, 0x15, 0x8a, 0x5c, 0xac, 0x60,
+	0x17, 0xe1, 0x37, 0x04, 0xe4, 0x1c, 0xdc, 0x2a, 0x92, 0xd8, 0xc0, 0x21, 0x66, 0x0c, 0x08, 0x00,
+	0x00, 0xff, 0xff, 0xe3, 0x13, 0xf4, 0x66, 0x3e, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -140,6 +142,14 @@ type GreeterClient interface {
 	StartJob(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
 	// Sends another greeting
 	StopJob(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
+	// List members
+	Members(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
+	// Join DDN
+	Join(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
+	// Start
+	Start(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
+	// Stop
+	Stop(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error)
 }
 
 type greeterClient struct {
@@ -168,12 +178,56 @@ func (c *greeterClient) StopJob(ctx context.Context, in *JobRequest, opts ...grp
 	return out, nil
 }
 
+func (c *greeterClient) Members(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error) {
+	out := new(JobReply)
+	err := c.cc.Invoke(ctx, "/Greeter/Members", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) Join(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error) {
+	out := new(JobReply)
+	err := c.cc.Invoke(ctx, "/Greeter/Join", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) Start(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error) {
+	out := new(JobReply)
+	err := c.cc.Invoke(ctx, "/Greeter/Start", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *greeterClient) Stop(ctx context.Context, in *JobRequest, opts ...grpc.CallOption) (*JobReply, error) {
+	out := new(JobReply)
+	err := c.cc.Invoke(ctx, "/Greeter/Stop", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GreeterServer is the server API for Greeter service.
 type GreeterServer interface {
 	// Sends a greeting
 	StartJob(context.Context, *JobRequest) (*JobReply, error)
 	// Sends another greeting
 	StopJob(context.Context, *JobRequest) (*JobReply, error)
+	// List members
+	Members(context.Context, *JobRequest) (*JobReply, error)
+	// Join DDN
+	Join(context.Context, *JobRequest) (*JobReply, error)
+	// Start
+	Start(context.Context, *JobRequest) (*JobReply, error)
+	// Stop
+	Stop(context.Context, *JobRequest) (*JobReply, error)
 }
 
 // UnimplementedGreeterServer can be embedded to have forward compatible implementations.
@@ -185,6 +239,18 @@ func (*UnimplementedGreeterServer) StartJob(ctx context.Context, req *JobRequest
 }
 func (*UnimplementedGreeterServer) StopJob(ctx context.Context, req *JobRequest) (*JobReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopJob not implemented")
+}
+func (*UnimplementedGreeterServer) Members(ctx context.Context, req *JobRequest) (*JobReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Members not implemented")
+}
+func (*UnimplementedGreeterServer) Join(ctx context.Context, req *JobRequest) (*JobReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Join not implemented")
+}
+func (*UnimplementedGreeterServer) Start(ctx context.Context, req *JobRequest) (*JobReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Start not implemented")
+}
+func (*UnimplementedGreeterServer) Stop(ctx context.Context, req *JobRequest) (*JobReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Stop not implemented")
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
@@ -227,6 +293,78 @@ func _Greeter_StopJob_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Greeter_Members_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).Members(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/Members",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).Members(ctx, req.(*JobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_Join_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).Join(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/Join",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).Join(ctx, req.(*JobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_Start_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).Start(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/Start",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).Start(ctx, req.(*JobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Greeter_Stop_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GreeterServer).Stop(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Greeter/Stop",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GreeterServer).Stop(ctx, req.(*JobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Greeter_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "Greeter",
 	HandlerType: (*GreeterServer)(nil),
@@ -238,6 +376,22 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StopJob",
 			Handler:    _Greeter_StopJob_Handler,
+		},
+		{
+			MethodName: "Members",
+			Handler:    _Greeter_Members_Handler,
+		},
+		{
+			MethodName: "Join",
+			Handler:    _Greeter_Join_Handler,
+		},
+		{
+			MethodName: "Start",
+			Handler:    _Greeter_Start_Handler,
+		},
+		{
+			MethodName: "Stop",
+			Handler:    _Greeter_Stop_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

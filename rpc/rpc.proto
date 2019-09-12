@@ -6,6 +6,15 @@ service Greeter {
     rpc StartJob (JobRequest) returns (JobReply) {}
     // Sends another greeting
     rpc StopJob (JobRequest) returns (JobReply) {}
+    // List members
+    rpc Members (JobRequest) returns (JobReply) {}
+    // Join DDN 
+    rpc Join (JobRequest) returns (JobReply) {}
+    // Start
+    rpc Start (JobRequest) returns (JobReply) {}
+    // Stop
+    rpc Stop (JobRequest) returns (JobReply) {}
+
   }
   
   // The request message containing the user's name.
